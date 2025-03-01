@@ -171,7 +171,7 @@
         </section>
       </main>
       <footer>
-				<small>(C) Nyao </small>
+				<small>(C) Na-na </small>
 			</footer>
      </div>
 
@@ -249,6 +249,20 @@
         ctx1.stroke();
      });
 
+     //x.描画開始(スマホ)
+     canvas1.addEventListener("touchstart",function(){
+        drow_add(ctx1, ctx2); //ctx1の絵をctx2へ書き込む
+        flg = 1;
+        ctx1.beginPath();
+        ctx1.arc(pen.x, pen.y, lwidth/2, 0, 2*Math.PI,false);
+        ctx1.closePath();
+        ctx1.fill();
+        ctx1.beginPath(); //パス開始
+        moveTo(pen.x, pen.y);
+        lineTo(pen.x, pen.y);
+        ctx1.stroke();
+     });
+
     //x.座標追加
     canvas1.addEventListener("mousemove",function(e){
       const rect = e.target.getBoundingClientRect();
@@ -260,6 +274,19 @@
       }
     });
 
+    //x.座標追加(スマホ用)
+    canvas1.addEventListener("touchmove",
+        function(e){
+          e.preventDefault();
+          const rect = e.target.getBoundingClientRect();
+          pen.x=e.touches[0].clientX-rect.left;
+          pen.y=e.touches[0].clientY-rect.top;
+          if(flg){
+            ctx1.lineTo(pen.x, pen.y);
+            ctx1.stroke();}
+        },{passive:false}
+      );
+
     //x.描画終了
     canvas1.addEventListener("mouseup",function(){
       flg = 0;   
@@ -270,6 +297,11 @@
       flg = 0;
     });
 
+    canvas1.addEventListener("touchend",function(){
+      flg = 0;
+    });
+
+
     //1つ前までの作業を保持
     function drow_add(a, b){
       let img = a.getImageData(0, 0, width, hight);
@@ -279,7 +311,7 @@
     // 最初から
     function reload(){
       ctx1.fillStyle="white";
-      ctx1.fillRect(0,0,width,hight);
+      ctx1.fillRect(0,0,width,hight); //背景は白
       ctx2.clearRect(0,0,width,hight);
       ctx3.clearRect(0,0,width,600);
       ctx3.fillStyle="darkblue"; //塗色を指定
