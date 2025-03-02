@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>お絵描きチャレンジ</title>
     <meta name="description" content="このサイトは絵を描いて楽しむサイトです">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="ico.ico">
     <style>
       /*CSSのエリア*/
       *{
@@ -31,7 +32,7 @@
 				#wrap {
 					width: 100%;
 				}
-			}
+			}  
 
 			header,
 			main,
@@ -85,13 +86,12 @@
 				color: white;
 			}
 
-      .canvases{
+      #canvases{
         margin-top: 1%;
         position: relative;
-        width: 700px;
-        height: 600px;
       }
-      .canvases canvas{
+
+      #canvases canvas{
         position:absolute;
         left: 0;
         border-radius: 0.5em;
@@ -107,7 +107,6 @@
       }
 
       .btn {
-        margin: 10px;
         width:auto;
         height:auto;
         font-weight: bold;
@@ -129,9 +128,6 @@
         box-shadow: 2px 2px 1px darkblue;
       }
 
-
-
-
     </style>
   </head>
   <body>
@@ -146,8 +142,8 @@
           <h2>ルール</h2>
             <ol>
               <li>『テーマを選ぶ』ボタンを押してテーマを決める。</li>
-              <li>テーマに沿ってお絵描きにチャレンジ!</li>
-              <li>完成した絵は保存して、みんなに共有してみよう!</li>
+              <li>テーマにあったお絵描きにチャレンジ!</li>
+              <li>できあがった絵は保存して、みんなに共有してみよう!</li>
             </ol>
           <section>
             <h3>はじめに</h3>
@@ -155,23 +151,23 @@
             <p><button onclick="select();" class="btn">テーマを選ぶ</button></p>
           </section>
           <section>
-            <div class = "canvases">
-              <canvas id="canvas3" width="600" height="600"></canvas>
-              <canvas id="canvas2" width="600" height="500"></canvas>
-              <canvas id="canvas1" width="600" height="500"></canvas>
+            <div id = "canvases">
+              <canvas id="canvas3"></canvas>
+              <canvas id="canvas2"></canvas>
+              <canvas id="canvas1"></canvas>
             </div>
             <p>線の太さ:・<input type="range" id="input1" onchange="change1();" value="10" min="1" max="20">●</p>
             <p>線の色:<input type="color" id="input2" onchange="change2();" value="#0000ff"/>
             <p>
               <button onclick="reload();">全部消す</button>
               <button onclick="back();">一つもどる</button></p>
-            <p><button class="btn" id="download" onclick="preview();">できた!</button></p>
+            <p><button class="btn" onclick="preview();">できた!</button></p>
             <p id="ok"></p>            
           </section>
         </section>
       </main>
       <footer>
-				<small>(C) Na-na </small>
+				<small>(C) Nyao </small>
 			</footer>
      </div>
 
@@ -182,17 +178,16 @@
       const ok = document.getElementById("ok"); // ダウンロードボタンを保存ボタンに
       const input1 = document.getElementById("input1"); //太さ
       const input2 = document.getElementById("input2"); //色
-      const canvas1=document.getElementById("canvas1");
-      const canvas2=document.getElementById("canvas2"); //ひとつ前の絵
-      const canvas3=document.getElementById("canvas3"); //最後のとりまとめ用
-      const ctx1=canvas1.getContext("2d",{willReadFrequently:true}); // willReadFrequently:getImageData()のメモリ節約
-      const ctx2=canvas2.getContext("2d",{willReadFrequently:true});
-      const ctx3=canvas3.getContext("2d",{willReadFrequently:true});
+      const canvas1 = document.getElementById("canvas1");
+      const canvas2 = document.getElementById("canvas2"); //ひとつ前の絵
+      const canvas3 = document.getElementById("canvas3"); //最後のとりまとめ用
+      const ctx1 = canvas1.getContext("2d",{willReadFrequently:true}); // willReadFrequently:getImageData()のメモリ節約
+      const ctx2 = canvas2.getContext("2d",{willReadFrequently:true});
+      const ctx3 = canvas3.getContext("2d",{willReadFrequently:true});
+      const can = document.getElementById("canvases"); //キャンバス全体
 
       //1.変数の設定と初期化
       const pen = {x:0, y:0};
-      const width = 600;
-      const hight = 500;
       let tms = ""
       let lwidth = 10; // 線の太さ
       let lcolor = "blue"
@@ -201,9 +196,25 @@
       const tms1 = ["おどる", "かわいい", "へんてこな", "さかさまな"];
       const tms2 = ["のりもの", "ロボット", "いきもの", "おうち"];
 
+      //キャンバスのサイズ調整
+      let width = 600;
+      let height = 500;
+      if (width > screen.width){
+        changeSize();
+      }
+      let height3 = height + 100;
+      can.style.width = width + "px";
+      can.style.height = height3 + "px";
+      canvas1.width = width;
+      canvas1.height = height;
+      canvas2.width = width;
+      canvas2.height = height;
+      canvas3.width = width;
+      canvas3.height = height3;
+
       //最初に表示させるもの
       ctx3.fillStyle="blue";
-      ctx3.fillRect(0,0,600,600); 
+      ctx3.fillRect(0,0,width,height3); 
       ctx3.fillStyle="white";
       ctx3.font="bold 20px 'Segoe Print', san-serif"; //フォントを指定
       ctx3.fillText("↑↑テーマを選んでね!",10,40);
@@ -235,33 +246,33 @@
       ctx1.strokeStyle = lcolor; //線の色を指定
      }
 
+     //描画開始
+     function oekakiStart(){
+        ctx1.beginPath();
+        ctx1.arc(pen.x, pen.y, lwidth/2, 0, 2*Math.PI,false);
+        ctx1.closePath();
+        ctx1.fill();
+        ctx1.beginPath(); //パス開始
+        moveTo(pen.x, pen.y);
+        ctx1.stroke();      
+     }
+
      //x.描画開始
      canvas1.addEventListener("mousedown",function(){
         drow_add(ctx1, ctx2); //ctx1の絵をctx2へ書き込む
         flg = 1;
-        ctx1.beginPath();
-        ctx1.arc(pen.x, pen.y, lwidth/2, 0, 2*Math.PI,false);
-        ctx1.closePath();
-        ctx1.fill();
-        ctx1.beginPath(); //パス開始
-        moveTo(pen.x, pen.y);
-        lineTo(pen.x, pen.y);
-        ctx1.stroke();
+        oekakiStart();
      });
 
      //x.描画開始(スマホ)
-     canvas1.addEventListener("touchstart",function(){
+     canvas1.addEventListener("touchstart",function(e){
         drow_add(ctx1, ctx2); //ctx1の絵をctx2へ書き込む
         flg = 1;
-        ctx1.beginPath();
-        ctx1.arc(pen.x, pen.y, lwidth/2, 0, 2*Math.PI,false);
-        ctx1.closePath();
-        ctx1.fill();
-        ctx1.beginPath(); //パス開始
-        moveTo(pen.x, pen.y);
-        lineTo(pen.x, pen.y);
-        ctx1.stroke();
-     });
+        const rect = e.target.getBoundingClientRect();
+        pen.x = e.clientX-rect.left;
+        pen.y = e.clientY-rect.top;
+        oekakiStart();
+     },{passive:false});
 
     //x.座標追加
     canvas1.addEventListener("mousemove",function(e){
@@ -304,21 +315,23 @@
 
     //1つ前までの作業を保持
     function drow_add(a, b){
-      let img = a.getImageData(0, 0, width, hight);
+      let img = a.getImageData(0, 0, width, height);
       b.putImageData(img, 0, 0);
     }
 
     // 最初から
     function reload(){
       ctx1.fillStyle="white";
-      ctx1.fillRect(0,0,width,hight); //背景は白
-      ctx2.clearRect(0,0,width,hight);
-      ctx3.clearRect(0,0,width,600);
+      ctx1.fillRect(0,0,width,height); //背景は白
+      ctx2.clearRect(0,0,width,height);
+      ctx3.clearRect(0,0,width,height3);
       ctx3.fillStyle="darkblue"; //塗色を指定
       ctx3.font="bold 20px 'Segoe Print', san-serif"; //フォントを指定
       ctx3.fillText("お絵描きスタート!",0,20);
       ctx3.fillStyle="black"; 
-      ctx3.fillText(tms+"を描いてみよう!!",10,50); //文字(文字列,x,y)
+      ctx3.font="bold 16px 'Segoe Print', san-serif"; 
+      ctx3.fillText(tms+"を描いてみよう!!",10,60); //文字(文字列,x,y)
+      ctx1.fillStyle=lcolor;
     }
 
     // 一つ戻す
@@ -328,11 +341,11 @@
 
     function preview(){
       ctx3.fillStyle="white";
-      ctx3.fillRect(0,0,width,600);
+      ctx3.fillRect(0,0,width,height3);
       ctx3.fillStyle="black"; //塗色を指定
       ctx3.font="bold 20px 'Segoe Print', san-serif"; //フォントを指定
       ctx3.fillText(tms,10,50); //文字(文字列,x,y)
-      let img = ctx1.getImageData(0, 0, width, 500);
+      let img = ctx1.getImageData(0, 0, width, height);
       ctx3.putImageData(img, 0, 80);
       ok.innerHTML = '<button class="btn" id="ok" onclick="download();">ダウンロードする</button>';      
     }
@@ -343,6 +356,11 @@
         link.download = "img.png";
         link.click();
       }
+
+    function changeSize(){
+      width = screen.width - (screen.width*0.1);
+      height = width - 100;
+    }
    </script>
  </body>
 </html>
