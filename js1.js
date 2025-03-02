@@ -1,5 +1,6 @@
 //JavaScriptのエリア
-const ok = document.getElementById("ok"); // ダウンロードボタンを保存ボタンに
+const ok = document.getElementById("ok");
+const save = document.getElementById("save");
 const input1 = document.getElementById("input1"); //太さ
 const input2 = document.getElementById("input2"); //色
 const canvas1 = document.getElementById("canvas1");
@@ -86,6 +87,7 @@ canvas1.addEventListener("mousedown",function(){
   drow_add(ctx1, ctx2); //ctx1の絵をctx2へ書き込む
   flg = 1;
   oekakiStart();
+  ok.innerHTML = '<button class="btn" onclick="preview();">できた!</button>';
 });
 
 //x.描画開始(スマホ)
@@ -157,6 +159,8 @@ function reload(){
   ctx3.font="bold 16px 'Segoe Print', san-serif"; 
   ctx3.fillText(tms+"を描いてみよう!!",10,60); //文字(文字列,x,y)
   ctx1.fillStyle=lcolor;
+  ok.innerHTML="";
+  save.innerHTML="";
 }
 
 // 一つ戻す
@@ -172,7 +176,7 @@ function preview(){
   ctx3.fillText(tms,10,50); //文字(文字列,x,y)
   let img = ctx1.getImageData(0, 0, width, height);
   ctx3.putImageData(img, 0, 80);
-  ok.innerHTML = '<button class="btn" id="ok" onclick="download();">ダウンロードする</button>';      
+  save.innerHTML = '<button class="btn" onclick="download();">ダウンロードする</button>';      
 }
 
 function download(){
