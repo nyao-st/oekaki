@@ -2,8 +2,8 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>裏のお絵かきチャレンジ</title>
-    <meta name="description" content="このサイトは絵をかいて楽しむサイトです">
+    <title>お絵かきチャレンジ　テストサイト</title>
+    <meta name="description" content="このサイトは絵をかいて楽しむサイトのテストページです">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="ico.ico">
     <link rel="stylesheet" type="text/css" href="st1.css">
@@ -22,14 +22,14 @@
     <!-- コンテンツのエリア -->
      <div id="wrap">
       <header>
-        <h1>裏のお絵かきチャレンジ👻</h1>
+        <h1>お絵かきチャレンジ　テストサイト</h1>
       </header>
       <main>
-          <p>このサイトは要望にこたえて随時修正しています。。</p>
+          <p>このサイトは絵をかいて楽しむサイトのテストページです。</p>
         <section>
-          <h3>更新履歴</h3>
+          <h2>更新履歴</h2>
           <dl>
-            <dt>描画モードを追加したよー!</dt>
+            <dt>描画モードを追加!</dt>
             <dd>●、■、▲、❤はスタンプみたいに押すことができるよ。</dd>
           </dl>
         </section>
@@ -47,7 +47,7 @@
           </section>
           <section>
             <div id = "canvases">
-              <canvas id="canvas2"></canvas>
+              <canvas id="canvas2">残念ながら対応しておりません。。</canvas>
               <canvas id="canvas3"></canvas>
               <canvas id="canvas1"></canvas>
             </div>
@@ -59,7 +59,7 @@
                 <option value="2">●</option>
                 <option value="3">■</option>
                 <option value="4">▲</option>
-                <option value="5">❤</option>
+                <option value="5">ハート</option>
               </select>
             </p>
 
@@ -72,10 +72,10 @@
           </section>
         </section>
         <section>
-          <h3>Q & A</h3>
+          <h2>Q & A</h2>
           <dl>
             <dt>消しゴムがない</dt>
-            <dd>「一つもどる」で操作を一つ戻す機能しかないです。あとはペンを白にしてうまいことがんばー👻</dd>
+            <dd>「一つもどる」で操作を一つ戻す機能しかないです。あとはペンを白にして調整してくださいまし。。</dd>
             <dt>細かいところが描きづらい</dt>
             <dd>画面を拡大して描いてみよう!</dd>
           </dl>
@@ -86,16 +86,13 @@
 			</footer>
      </div>
 
-
-
    <script>
       //JavaScriptのエリア
       const save = document.getElementById("save");
-      const ok = document.getElementById("ok"); // ダウンロードボタンを保存ボタンに
+      const ok = document.getElementById("ok"); // ダウンロードボタンを表示
       const input1 = document.getElementById("input1"); //太さ
       const input2 = document.getElementById("input2"); //色
       const mode = document.getElementById("mode"); //描画モード
-      let modeN = "1";
       const canvas1 = document.getElementById("canvas1");
       const canvas2 = document.getElementById("canvas2"); //ひとつ前の絵
       const canvas3 = document.getElementById("canvas3"); //最後のとりまとめ用
@@ -107,14 +104,13 @@
       //1.変数の設定と初期化
       const pen = {x:0, y:0};
       let tms = ""
+      let modeN = mode.value;　//描画モードの値を取得
       let lwidth = 10; // 線の太さ
-      let lcolor = "blue"
+      let lcolor = "blue";
       let v1 = 100;  // ミリ秒の初期値
       let flg = 0; // mousedownしたら1, upの時は0
-      // let viewFlg = 0;
       const tms1 = ["おどる", "かわいい", "へんてこな", "さかさまな"];
       const tms2 = ["のりもの", "ロボット", "いきもの", "おうち"];
-      // const s = 80; // canvas3の誤差
 
       //キャンバスのサイズ調整
       let width = 600;
@@ -144,7 +140,6 @@
       ctx1.fillStyle = lcolor;
       ctx1.strokeStyle = lcolor; //線の色を指定
       ctx1.lineCap = "round"; //線の終点は丸く
-      ctx3.lineCap = "round"; //線の終点は丸く
 
      //テーマ選択
      function select(){
@@ -154,6 +149,11 @@
       reload()
      }
 
+     //キャンバスサイズ変更
+    function changeSize(){
+      width = screen.width - (screen.width*0.1);
+      height = width - 100;
+    }
      //線の太さ変更
      function change1(){
       lwidth = parseFloat(input1.value);
@@ -174,38 +174,34 @@
 
      //描画開始
      function oekakiStart(){
-        const hwidth=lwidth/2;
-        if(modeN==="1"){
-          flg = 1;
-          ctx1.beginPath(); //パス開始
-          moveTo(pen.x, pen.y);
-          ctx1.stroke();  
-        }
-        else if(modeN==="2"){
-          ctx1.beginPath();
-          ctx1.arc(pen.x, pen.y, lwidth/2, 0, 2*Math.PI,false);
-          ctx1.closePath();
-          ctx1.fill();
-        }
-        else if(modeN==="3"){
-          ctx1.fillRect(pen.x-(lwidth/2), pen.y-(lwidth/2), lwidth, lwidth);
-        }
-        else if(modeN==="4"){
-          ctx1.beginPath(); //パス開始
-          ctx1.moveTo(pen.x, pen.y); //開始点の座標を指定
-          ctx1.lineTo(pen.x-hwidth, pen.y+lwidth); //頂点の座標を指定
-          ctx1.lineTo(pen.x+hwidth, pen.y+lwidth); //頂点の座標を指定
-          ctx1.closePath(); //パスを閉じる
-          ctx1.fill();  //塗る
-        }
-        else if(modeN==="5"){
-          ctx1.beginPath(); //パス開始
-          ctx1.moveTo(pen.x-hwidth, pen.y-hwidth); //開始点の座標を指定
-          ctx1.lineTo(pen.x, pen.y);  //頂点を追加
-          ctx1.lineTo(pen.x+hwidth, pen.y-hwidth); //終点の座標を指定
-          ctx1.stroke();  //線をひく  
-        }
-        ok.innerHTML = '<button class="btn" onclick="preview();">できた!</button>';
+      const hwidth=lwidth/2;
+      if(modeN==="1"){
+        flg = 1;
+        ctx1.beginPath(); //パス開始
+        moveTo(pen.x, pen.y);
+        ctx1.stroke();  
+      }else if(modeN==="2"){
+        ctx1.beginPath();
+        ctx1.arc(pen.x, pen.y, lwidth/2, 0, 2*Math.PI,false);
+        ctx1.closePath();
+        ctx1.fill();
+      }else if(modeN==="3"){
+        ctx1.fillRect(pen.x-(lwidth/2), pen.y-(lwidth/2), lwidth, lwidth);
+      }else if(modeN==="4"){　// 三角形
+        ctx1.beginPath(); //パス開始
+        ctx1.moveTo(pen.x, pen.y); //開始点の座標を指定
+        ctx1.lineTo(pen.x-hwidth, pen.y+lwidth); //頂点の座標を指定
+        ctx1.lineTo(pen.x+hwidth, pen.y+lwidth); //頂点の座標を指定
+        ctx1.closePath(); //パスを閉じる
+        ctx1.fill();  //塗る
+      }else{ // ハート
+        ctx1.beginPath(); //パス開始
+        ctx1.moveTo(pen.x-hwidth, pen.y-hwidth); //開始点の座標を指定
+        ctx1.lineTo(pen.x, pen.y);  //頂点を追加
+        ctx1.lineTo(pen.x+hwidth, pen.y-hwidth); //終点の座標を指定
+        ctx1.stroke();  //線をひく  
+      }
+      ok.innerHTML = '<button class="btn" onclick="preview();">できた!</button>';
      }
 
      //x.描画開始
@@ -232,23 +228,21 @@
         ctx1.lineTo(pen.x, pen.y);
         ctx1.stroke();
       }
-      // else if(tms!=""){
-      //   markpre();
-      // }
     });
 
     //x.座標追加(スマホ用)
     canvas1.addEventListener("touchmove",
-        function(e){
-          e.preventDefault();
-          const rect = e.target.getBoundingClientRect();
-          pen.x=e.touches[0].clientX-rect.left;
-          pen.y=e.touches[0].clientY-rect.top;
-          if(flg){
-            ctx1.lineTo(pen.x, pen.y);
-            ctx1.stroke();}
-        },{passive:false}
-      );
+      function(e){
+        e.preventDefault();
+        const rect = e.target.getBoundingClientRect();
+        pen.x=e.touches[0].clientX-rect.left;
+        pen.y=e.touches[0].clientY-rect.top;
+        if(flg){
+          ctx1.lineTo(pen.x, pen.y);
+          ctx1.stroke();
+        }
+      },{passive:false}
+    );
 
     //x.描画終了
     canvas1.addEventListener("mouseup",function(){
@@ -264,7 +258,6 @@
       flg = 0;
     });
 
-
     //1つ前までの作業を保持
     function drow_add(a, b){
       let img = a.getImageData(0, 0, width, height);
@@ -278,7 +271,6 @@
       ctx2.clearRect(0,0,width,height);
       reload3();
       ctx1.fillStyle=lcolor;
-      // viewFlg = 1;
       ok.innerHTML="";
       save.innerHTML="";
     }
@@ -294,49 +286,12 @@
       ctx3.fillText(tms+"を描いてみよう!!",10,60); //文字(文字列,x,y)
     }
 
-    // マーク選択時の画像の表示
-    // function markpre(){
-    //   if(viewFlg){
-    //     reload3();
-    //     const hwidth=lwidth/2;
-    //     ctx3.fillStyle=lcolor; 
-    //     ctx3.lineWidth = lwidth;
-    //     ctx3.strokeStyle = lcolor;
-    //     if(modeN==="3"){
-    //       ctx3.fillRect(pen.x-(lwidth/2), pen.y-(lwidth/2)+s, lwidth, lwidth);
-    //     }
-    //     else if(modeN==="4"){
-    //       ctx3.beginPath(); //パス開始
-    //       ctx3.moveTo(pen.x, pen.y+s); //開始点の座標を指定
-    //       ctx3.lineTo(pen.x-hwidth, pen.y+lwidth+s); //頂点の座標を指定
-    //       ctx3.lineTo(pen.x+hwidth, pen.y+lwidth+s); //頂点の座標を指定
-    //       ctx3.closePath(); //パスを閉じる
-    //       ctx3.fill();  //塗る
-    //     }
-    //     else if(modeN==="5"){
-    //       ctx3.beginPath(); //パス開始
-    //       ctx3.moveTo(pen.x-hwidth, pen.y-hwidth+s); //開始点の座標を指定
-    //       ctx3.lineTo(pen.x, pen.y+s);  //頂点を追加
-    //       ctx3.lineTo(pen.x+hwidth, pen.y-hwidth+s); //終点の座標を指定
-    //       ctx3.stroke();  //線をひく  
-    //     }
-    //     else{
-    //       // ペンまたは●の時
-    //       ctx3.beginPath();
-    //       ctx3.arc(pen.x, pen.y+s, lwidth/2, 0, 2*Math.PI,false);
-    //       ctx3.closePath();
-    //       ctx3.fill();
-    //     }
-    //   }
-    // }
-
     // 一つ戻す
     function back(){
       drow_add(ctx2, ctx1);      
     }
 
     function preview(){
-      // viewFlg = 0;
       ctx3.fillStyle="white";
       ctx3.fillRect(0,0,width,height3);
       ctx3.fillStyle="black"; //塗色を指定
@@ -348,15 +303,10 @@
     }
 
     function download(){
-        let link = document.createElement("a");
-        link.href = canvas3.toDataURL("image/png");
-        link.download = "img.png";
-        link.click();
-      }
-
-    function changeSize(){
-      width = screen.width - (screen.width*0.1);
-      height = width - 100;
+      let link = document.createElement("a");
+      link.href = canvas3.toDataURL("image/png");
+      link.download = "img.png";
+      link.click();
     }
    </script>
  </body>
